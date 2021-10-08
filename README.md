@@ -7,6 +7,9 @@
 Mencari benda dengan awalan huruf B, G, atau L. Kemudian foto sesuai dengan ketentuan yang diberikan.
 Benda yang saya pilih adalah : **Gembok**
 
+### Hasil Akhir
+<img src="./images/hasilakhir.gif">
+
 ### Foto Benda Depan Atas
 
 <img src="./images/Depan.jpg" style="width: 1000px; length: 1200px">
