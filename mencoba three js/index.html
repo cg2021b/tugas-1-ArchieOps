@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Hands-On Three.js</title>
+    <script src="js/three.js"></script>
+</head>
+<body style="overflow-x: hidden;">
+    <h1 style="text-align: center;">Mencoba Three.js</h1>
+    <select name="linghtChoices" id="lightChoices" style="margin-bottom: 10px;">
+        <option value="0">Hemisphere Light</option>
+        <option value="1">Ambient Light</option>
+        <option value="2">Directional Light</option>
+        <option value="3">Point Light</option>
+        <option value="4">Spot Light</option>
+    </select>
+</body>
+</html>
+
+<script>
+        
+        let scene, camera, renderer;
+        let cube, cone, torus, cylinder, dodecahedron, octahedron;
+        let ambientLight, hemisphereLight, directionalLight, pointLight, spotLight;
+        let lightChoices;
+
+        // Geometrics Function
+        let createCube = function(){
+            let geometry = new THREE.BoxGeometry(5,5,5);
+            let material = new THREE.MeshBasicMaterial({color: 0x0000ff});
+            cube = new THREE.Mesh(geometry, material);
+            cube.material.wireframe = true;
+            scene.add( cube );
+        };
+
+        let createCone = function(){
+            let geometry = new THREE.ConeGeometry(4, 5, 8);
+            let material = new THREE.MeshNormalMaterial();
+            cone = new THREE.Mesh( geometry, material );
+            scene.add(cone);  
+        };
+
+        let createTorus = function(){
+            let geometry = new THREE.TorusGeometry(3, 1.5, 16, 100);
+            let material = new THREE.MeshPhongMaterial({color: 0xed493e, shininess: 200});
+            torus = new THREE.Mesh(geometry, material);
+            scene.add(torus);     
+        };
+
+        let createCylinder = function(){
+            let geometry = new THREE.CylinderGeometry( 3, 3, 8, 32 );
+            let material = new THREE.MeshPhysicalMaterial( {color: 0x3bc452, reflectivity: 1, clearcoat: 1.0});
+            cylinder = new THREE.Mesh(geometry, material);
+            scene.add(cylinder);
+        }
+
+        
+        let createOctahedron = function(){
+            let geometry = new THREE.OctahedronGeometry(4.5);
+            let material = new THREE.MeshStandardMaterial( {color: 0x8b0af5, metalness: 0.3});
+            octahedron = new THREE.Mesh(geometry, material);
+            scene.add(octahedron);
+        }
+
+
+        let createDodecahedron = function(){
+            let geometry = new THREE.DodecahedronGeometry(4.5);
+            let material = new THREE.MeshToonMaterial( {color: 0xe3550e, wireframe: true});
+            dodecahedron = new THREE.Mesh(geometry, material);
+            scene.add(dodecahedron);
+        }
+        // --------------------------------------------------------
+
+
+        // Inititate lighting effect (Lighting Function)
+        let initiateLighting = function(){
+             // Hemisphere Light
+            hemisphereLight = new THREE.HemisphereLight( 0xffffff, 0x141414, 2);
+            hemisphereLight.position.set(0, 40, 0);     // Tengah atas tengah
+            scene.add( hemisphereLight );
+
+            // AmbientLight
+            ambientLight = new THREE.AmbientLight(0xffffff);
+            scene.add(ambientLight);
+            
+            // Directional light
+            directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(0, 40, 50);   //Tengah atas depan
+            scene.add(directionalLight);
+
+            // PointLight
+            pointLight = new THREE.PointLight({color: 0xffffff, intensity: 1, decay: 300});
+            pointLight.position.set(-60, 40, 50);   //Kiri atas dpan
+            scene.add(pointLight);
+
+            // SpotLight
+            spotLight = new THREE.SpotLight({color: 0xffffff, decay: 300, penumbra: 0.8});
+            spotLight.position.set(60, 40, 50);     //Kanan atas depan
+            scene.add(spotLight);
+
+            // Initiate the first lighting
+            lightChoices = [hemisphereLight, ambientLight, directionalLight, pointLight, spotLight];
+            
+            lightChoices.forEach((light) => {
+                light.visible = false;
+            });
+            lightChoices[0].visible = true;
+        }
+        // -----------------------------
+
+        
+
+
+        // set up the environment - 
+        // initiallize scene, camera, objects and renderer
+        let init = function() {
+            
+            // 1. create the scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0f0f0f);
+
+            // 2. create an locate the camera       
+            camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.z = 100;
+            
+            // 3. create an locate the object on the scene           
+            createCube();
+            createCone();
+            createTorus();
+            createCylinder();
+            createOctahedron();
+            createDodecahedron();
+
+                // 3.1 Add the lighting to the scene
+                initiateLighting();
+                
+                // Check for the changes on lighting selection
+                const selectedLight = document.getElementById("lightChoices");
+                selectedLight.addEventListener('change', function(){
+                let index = Number(this.value);
+                lightChoices.forEach((light) => {
+                    light.visible = false;
+                });
+                lightChoices[index].visible = true;
+            })
+
+
+            // 4. create the renderer     
+            renderer = new THREE.WebGLRenderer();   
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            document.body.appendChild(renderer.domElement);
+          
+        };
+
+        // X size = -50 ... 50;
+        // y size = -22 ... 22; 
+
+        // main animation loop - calls 50-60 in a second.
+        let mainLoop = function() {
+            // cube animation
+            cube.position.x = -15;
+            cube.position.y = 10;
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+
+            // cone animation
+            cone.position.x = 0;
+            cone.position.y = 10;
+            cone.rotation.x += -0.01;
+            cone.rotation.y += 0.01
+            cone.rotation.z += -0.01;
+
+            // torus position
+            torus.position.x = 15;
+            torus.position.y = 10;
+            torus.rotation.x += 0.01;
+            torus.rotation.y += -0.01;
+
+            // cylinder position
+            cylinder.position.x = -15;
+            cylinder.position.y = -5;
+            cylinder.rotation.x += 0.01;
+            cylinder.rotation.y += -0.01;   
+            cylinder.rotation.z += 0.01;
+
+            // dodecahedron position
+            dodecahedron.position.x = 15;
+            dodecahedron.position.y = -5;
+            dodecahedron.rotation.x += 0.01;
+            dodecahedron.rotation.y += 0.01;
+
+            // dodecahedron position
+            octahedron.position.x = 0;
+            octahedron.position.y = -5;
+            octahedron.rotation.x += 0.01;
+            octahedron.rotation.y += 0.02;
+
+            requestAnimationFrame(mainLoop);
+            renderer.render(scene, camera);
+
+        };
+        
+        ///////////////////////////////////////////////
+        init();
+        mainLoop();
+</script>
+    
+    
