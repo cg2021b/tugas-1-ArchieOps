@@ -1,0 +1,22 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl leaf
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.690196 0.690196 0.690196
+Ks 0.009961 0.009961 0.009961
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd itrees-02-leaf_002.jpg
+
+newmtl roots
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.690196 0.690196 0.690196
+Ks 0.009961 0.009961 0.009961
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd iTrees-02_Bark-HawthornOld-03.jpg
